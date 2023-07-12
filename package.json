@@ -1,0 +1,17 @@
+{
+  "name": "todolist",
+  "version": "1.0.0",
+  "description": "Todo list example",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todo"
+  ],
+  "author": "Andrey Timoshenkov",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bootstrap": "^4.0.0"
+  }
+}
