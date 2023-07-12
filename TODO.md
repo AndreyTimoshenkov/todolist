@@ -1,0 +1,6 @@
+- Remove HTML from JS
+- Remove all extra CSS
+- Add README
+- Add DocBlock comments to all functions (event.target.constructor)
+- Remove all irrelevant comments
+- Commit & push to GitHub

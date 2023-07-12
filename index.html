@@ -47,7 +47,8 @@
 			<div class="card-body">
 				<form id="form">
 					<div class="form-group">
-						<input type="text" class="form-control" id="taskInput" placeholder="Текст задачи" required>
+						<input type="text" name="taskInput" class="form-control" id="taskInput" autofocus
+							placeholder="Текст задачи" required>
 						<small id="emailHelp" class="form-text text-muted">Что делаем, сколько времени тратим, какой
 							результат получаем.</small>
 					</div>
@@ -58,6 +59,20 @@
 		<!-- //Form  -->
 		<!-- <button id="removeDoneTasks" class="btn btn-secondary mt-4 float-right">Удалить выполненные задачи</button> -->
 
+	</div>
+
+	<div class="d-none" id="item-template">
+		<li id="{{ID}}" class="list-group-item d-flex {{CSS_CLASS}} justify-content-between task-item">
+			<span>{{TEXT}}</span>
+			<div class="task-item__buttons">
+				<button type="button" data-action="done" class="btn-action">
+					✅
+				</button>
+				<button type="button" data-action="delete" class="btn-action">
+					🗑
+				</button>
+			</div>
+		</li>
 	</div>
 
 	<script src="js/main.js"></script>

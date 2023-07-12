@@ -3,30 +3,21 @@ const taskInput = document.querySelector('#taskInput');
 const taskList = document.querySelector('#taskList');
 const emptyList = document.querySelector('#emptyList');
 
-let tasks = [];
-
 function addTask(event) {
-
     event.preventDefault();
-
-    const taskText = taskInput.value;
+    const data = new FormData(event.target);
 
     const newTask = {
         id: Date.now(),
-        text: taskText,
+        text: data.get("taskInput"),
         done: false,
     }
-    tasks.push(newTask);
 
-    saveToLS();
+    localStorage.setItem(newTask.id, JSON.stringify(newTask));
 
     visualiseTask(newTask);
 
-    taskInput.value = '';
-
-    taskInput.focus();
-
-    checkIfIsEmpty();
+    event.target.reset();
 
 };
 
@@ -35,70 +26,56 @@ function deleteTask(event) {
 
     const parentNode = event.target.closest('li');
 
-    const id = Number(parentNode.id);
-
-    tasks = tasks.filter((task) => task.id !== id);
-
     parentNode.remove();
 
-    saveToLS();
+    localStorage.removeItem(parentNode.id);
 
     checkIfIsEmpty();
 };
 
+/**
+ * @param {PointerEvent<HTMLButtonElement>} event 
+ */
 function markAsDone(event) {
+    console.log(event.target.constructor);
+
     if (event.target.dataset.action !== 'done') return;
 
     const parentNode = event.target.closest('li');
 
-    parentNode.querySelector('.task-title').classList.toggle('task-title--done');
+    parentNode.classList.toggle('disabled');
 
-    const id = Number(parentNode.id);
-
-    const task = tasks.find(function (task) {
-        return task.id === id
-    });
+    const task = JSON.parse(localStorage.getItem(parentNode.id));
 
     task.done = !task.done;
 
-    saveToLS();
+    localStorage.setItem(task.id, JSON.stringify(task));
+
 };
 
 function checkIfIsEmpty() {
-    if (tasks.length === 0) {
-        const emptyListMarkUp = `<li id="emptyList" class="list-group-item empty-list">
-                                <h1>🥳</h1>
-                                <div class="empty-list__title">Список дел пуст</div>
-                                </li>`;
-        taskList.insertAdjacentHTML('afterbegin', emptyListMarkUp);
+    if (localStorage.length === 0) {
+        taskList.innerHTML = `<li id="emptyList" class="list-group-item empty-list">
+            <h1>🥳</h1>
+            <div class="empty-list__title">Список дел пуст</div>
+            </li>`;
     } else {
-        const emptyListElement = document.querySelector('#emptyList');
+        const emptyListElement = document.getElementById('emptyList');
         if (emptyListElement) {
             emptyListElement.remove()
         };
     }
 };
 
-function saveToLS() {
-    localStorage.setItem('tasks', JSON.stringify(tasks))
-};
-
 function visualiseTask(task) {
     const cssClass = task.done ? 'disabled' : 'task-title';
-    const tagName = task.done ? "del" : "span";
+    const template = document.getElementById("item-template").innerHTML;
 
-    const taskMarkUp = `
-                    <li id ="${task.id} "class="list-group-item d-flex ${cssClass} justify-content-between task-item">
-                        <${tagName}>${task.text}</${tagName}>
-                        <div class="task-item__buttons">
-                            <button type="button" data-action="done" class="btn-action">
-                            ✅
-                            </button>
-                            <button type="button" data-action="delete" class="btn-action">
-                            🗑
-                            </button>
-                        </div>
-                    </li>`;
+    const taskMarkUp = template
+        .replace("{{ID}}", task.id)
+        .replace("{{CSS_CLASS}}", cssClass)
+        .replace("{{TEXT}}", task.text);
+
     taskList.insertAdjacentHTML('beforeend', taskMarkUp);
 };
 
@@ -109,12 +86,10 @@ taskList.addEventListener('click', markAsDone);
 document.addEventListener("DOMContentLoaded", (event) => {
     console.log("DOM fully loaded and parsed");
 
-    if (localStorage.getItem('tasks')) {
-        tasks = JSON.parse(localStorage.getItem('tasks'));
+    for (let i = 0; i < localStorage.length; i++) {
+        const task = JSON.parse(localStorage.getItem(localStorage.key(i)));
 
-        tasks.forEach(function (task) {
-            visualiseTask(task);
-        });
+        visualiseTask(task);
     };
 
     checkIfIsEmpty();
