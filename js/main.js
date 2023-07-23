@@ -3,8 +3,14 @@ const taskInput = document.querySelector('#taskInput');
 const taskList = document.querySelector('#taskList');
 const emptyList = document.querySelector('#emptyList');
 
+/**
+ * 
+ * @param {SubmitEvent} event 
+ */
 function addTask(event) {
+
     event.preventDefault();
+
     const data = new FormData(event.target);
 
     const newTask = {
@@ -19,9 +25,15 @@ function addTask(event) {
 
     event.target.reset();
 
-};
+    checkIfIsEmpty();
 
+};
+/**
+ * 
+ * @param {PointerEvent<HTMLButtonElement>} event
+ */
 function deleteTask(event) {
+
     if (event.target.dataset.action !== 'delete') return;
 
     const parentNode = event.target.closest('li');
@@ -37,7 +49,6 @@ function deleteTask(event) {
  * @param {PointerEvent<HTMLButtonElement>} event 
  */
 function markAsDone(event) {
-    console.log(event.target.constructor);
 
     if (event.target.dataset.action !== 'done') return;
 
@@ -52,21 +63,19 @@ function markAsDone(event) {
     localStorage.setItem(task.id, JSON.stringify(task));
 
 };
-
 function checkIfIsEmpty() {
+    const emptyListElement = document.getElementById('empty-list');
     if (localStorage.length === 0) {
-        taskList.innerHTML = `<li id="emptyList" class="list-group-item empty-list">
-            <h1>🥳</h1>
-            <div class="empty-list__title">Список дел пуст</div>
-            </li>`;
+        taskList.innerHTML = emptyListElement.innerHTML;
     } else {
-        const emptyListElement = document.getElementById('emptyList');
         if (emptyListElement) {
             emptyListElement.remove()
         };
     }
 };
-
+/**
+ * @param {{ id: Number, text: String, done: Boolean }} task 
+ */
 function visualiseTask(task) {
     const cssClass = task.done ? 'disabled' : 'task-title';
     const template = document.getElementById("item-template").innerHTML;
@@ -82,9 +91,7 @@ function visualiseTask(task) {
 form.addEventListener('submit', addTask);
 taskList.addEventListener('click', deleteTask);
 taskList.addEventListener('click', markAsDone);
-
 document.addEventListener("DOMContentLoaded", (event) => {
-    console.log("DOM fully loaded and parsed");
 
     for (let i = 0; i < localStorage.length; i++) {
         const task = JSON.parse(localStorage.getItem(localStorage.key(i)));
