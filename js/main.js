@@ -68,9 +68,7 @@ function checkIfIsEmpty() {
     if (localStorage.length === 0) {
         taskList.innerHTML = emptyListElement.innerHTML;
     } else {
-        if (emptyListElement) {
-            emptyListElement.remove()
-        };
+        document.getElementById("empty-list-template").remove();
     }
 };
 /**
@@ -92,12 +90,9 @@ form.addEventListener('submit', addTask);
 taskList.addEventListener('click', deleteTask);
 taskList.addEventListener('click', markAsDone);
 document.addEventListener("DOMContentLoaded", (event) => {
-
     for (let i = 0; i < localStorage.length; i++) {
         const task = JSON.parse(localStorage.getItem(localStorage.key(i)));
-
         visualiseTask(task);
     };
-
     checkIfIsEmpty();
 });
