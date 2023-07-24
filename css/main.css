@@ -54,3 +54,7 @@ body {
   background-color: #e0e5ea;
   opacity: 1;
 }
+
+.disabled>span {
+  text-decoration: line-through;
+}
